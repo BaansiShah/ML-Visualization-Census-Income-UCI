@@ -6,3 +6,11 @@ In this project, we create an interactive visualization to explore sets of LIME 
 #### Course: CS-GY 9223 Visualisation for machine learning 
 #### Term: Spring 2022
 #### Instructor: Prof. Claudio Silva
+
+
+## To run the app:
+#Task 1:
+pip install -r requirements.txt
+
+#Task2:
+streamlit run app.py
