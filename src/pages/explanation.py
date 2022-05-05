@@ -11,6 +11,7 @@ import pandas as pd
 import lime
 import shap 
 from lime import lime_tabular
+import seaborn as sns
 from src.get_data import dataframe
 import streamlit.components.v1 as components
 st.set_option('deprecation.showPyplotGlobalUse', False)
