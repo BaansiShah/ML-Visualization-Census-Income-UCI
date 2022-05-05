@@ -112,6 +112,7 @@ def write():
                     st.pyplot()
                     instance = lime_explanation(formatted_data, model)
                     components.html(instance.as_html())
+                    #st.write("The Row on which we have applied Lime is : ", data.ilo)
                        
                 else:
                     ##Summary plot
@@ -153,6 +154,7 @@ def write():
                     st.pyplot()
                     instance = lime_explanation(formatted_data, model)
                     components.html(instance.as_html(), height=800)
+                    st.write("The Row on which we have applied Lime is : ", data.iloc[1])
                    
                 else:
                     ##Summary plot
@@ -171,13 +173,13 @@ def write():
                     if model_select == "Random Forest":
                         inds = shap.approximate_interactions(index, shap_values[1], formatted_data[4][:100])
                         for i in range(2):
-                            shap.dependence_plot(0,shap_values[1],formatted_data[4][:100],interaction_index=inds[i],feature_names=columns,show=False)
+                            shap.dependence_plot(index,shap_values[1],formatted_data[4][:100],interaction_index=inds[i],feature_names=syn_columns,show=False)
                             st.pyplot()
                             plt.clf()
                     else:
                         inds = shap.approximate_interactions(index, shap_values, formatted_data[4][:100])
                         for i in range(2):
-                            shap.dependence_plot(0,shap_values,formatted_data[4][:100],interaction_index=inds[i],feature_names=columns,show=False)
+                            shap.dependence_plot(index,shap_values,formatted_data[4][:100],interaction_index=inds[i],feature_names=syn_columns,show=False)
                             st.pyplot()
                             plt.clf()
                         
@@ -196,6 +198,7 @@ def write():
                     st.pyplot()
                     instance = lime_explanation(formatted_data, model)
                     components.html(instance.as_html(), height=800)
+                    st.write("The Row on which we have applied Lime is : ", data.iloc[2])
                    
                 else:
                     ##Summary plot
@@ -214,13 +217,13 @@ def write():
                     if model_select == "Random Forest":
                         inds = shap.approximate_interactions(index, shap_values[1], formatted_data[4][:100])
                         for i in range(2):
-                            shap.dependence_plot(0,shap_values[1],formatted_data[4][:100],interaction_index=inds[i],feature_names=columns,show=False)
+                            shap.dependence_plot(index,shap_values[1],formatted_data[4][:100],interaction_index=inds[i],feature_names=syn_columns,show=False)
                             st.pyplot()
                             plt.clf()
                     else:
                         inds = shap.approximate_interactions(index, shap_values, formatted_data[4][:100])
                         for i in range(2):
-                            shap.dependence_plot(0,shap_values,formatted_data[4][:100],interaction_index=inds[i],feature_names=columns,show=False)
+                            shap.dependence_plot(index,shap_values,formatted_data[4][:100],interaction_index=inds[i],feature_names=syn_columns,show=False)
                             st.pyplot()
                             plt.clf()
                         
@@ -239,6 +242,7 @@ def write():
                     st.pyplot()
                     instance = lime_explanation(formatted_data, model)
                     components.html(instance.as_html(), height=800)
+                    st.write("The Row on which we have applied Lime is : ", data.iloc[4])
                    
                 else:
                     ##Summary plot
@@ -257,13 +261,13 @@ def write():
                     if model_select == "Random Forest":
                         inds = shap.approximate_interactions(index, shap_values[1], formatted_data[4][:100])
                         for i in range(2):
-                            shap.dependence_plot(0,shap_values[1],formatted_data[4][:100],interaction_index=inds[i],feature_names=columns,show=False)
+                            shap.dependence_plot(index,shap_values[1],formatted_data[4][:100],interaction_index=inds[i],feature_names=syn_columns,show=False)
                             st.pyplot()
                             plt.clf()
                     else:
                         inds = shap.approximate_interactions(index, shap_values, formatted_data[4][:100])
                         for i in range(2):
-                            shap.dependence_plot(0,shap_values,formatted_data[4][:100],interaction_index=inds[i],feature_names=columns,show=False)
+                            shap.dependence_plot(index,shap_values,formatted_data[4][:100],interaction_index=inds[i],feature_names=syn_columns,show=False)
                             st.pyplot()
                             plt.clf()
                         
@@ -282,6 +286,7 @@ def write():
                     st.pyplot()
                     instance = lime_explanation(formatted_data, model)
                     components.html(instance.as_html(), height=800)
+                    st.write("The Row on which we have applied Lime is : ", data.iloc[1])
                    
                 else:
                     ##Summary plot
@@ -300,13 +305,13 @@ def write():
                     if model_select == "Random Forest":
                         inds = shap.approximate_interactions(index, shap_values[1], formatted_data[4][:100])
                         for i in range(2):
-                            shap.dependence_plot(0,shap_values[1],formatted_data[4][:100],interaction_index=inds[i],feature_names=columns,show=False)
+                            shap.dependence_plot(index,shap_values[1],formatted_data[4][:100],interaction_index=inds[i],feature_names=syn_columns,show=False)
                             st.pyplot()
                             plt.clf()
                     else:
                         inds = shap.approximate_interactions(index, shap_values, formatted_data[4][:100])
                         for i in range(2):
-                            shap.dependence_plot(0,shap_values,formatted_data[4][:100],interaction_index=inds[i],feature_names=columns,show=False)
+                            shap.dependence_plot(index,shap_values,formatted_data[4][:100],interaction_index=inds[i],feature_names=syn_columns,show=False)
                             st.pyplot()
                             plt.clf()
                         
