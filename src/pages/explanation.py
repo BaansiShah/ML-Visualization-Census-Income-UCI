@@ -94,7 +94,7 @@ def shap_explanation(data_fit,model):
         
 def write():
     with st.spinner("Loading ..."):
-        st.markdown('## ML Explanations',unsafe_allow_html=True)
+        st.title('ML Explanations')
         col1, col2, col3 = st.columns(3)
      
         with col1:
@@ -133,7 +133,7 @@ def write():
                       font: bold {30}px Courier;
                     }}
                     </style>
-                    <p class="a">{data_select}</p>
+                    <p class="a">{'Synthetic Data without noise'}</p>
                     """
                     st.markdown(html_str, unsafe_allow_html=True)
                     ##Summary plot
