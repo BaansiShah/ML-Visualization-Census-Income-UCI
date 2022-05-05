@@ -129,14 +129,13 @@ def write():
                     formatted_data,model = create_model(data,data[columns], model_select)
                     shap_values,explainer = shap_explanation(formatted_data, model)
                     st.write(type(shap_values))
-                    #st_shap(shap.force_plot(explainer.expected_values, shap_values[0], X_test[:100], plot_cmap=["#FF5733","#335BFF"]))
-                    #st.pyplot()
                     shap.summary_plot(shap_values,formatted_data[2],feature_names=columns,plot_type="bar",show=False)
                     st.pyplot(bbox_inches='tight')
                     plt.clf()
     
                     ##Dependence plot
                     feature_select = st.selectbox('Feature',columns)
+                    st.write(feature_select)
                     inds = shap.approximate_interactions(feature_select, shap_values, formatted_data[4][:100])
                     for i in range(4):
                         shap.dependence_plot(feature_select,shap_values,formatted_data[4][:100],interaction_index=inds[i],show=False)
