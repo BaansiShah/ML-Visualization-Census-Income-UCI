@@ -107,8 +107,16 @@ def write():
         try:
             data = dataframe(str(data_select))
                     
-            if data_select == "US Census Data":
-                st.markdown('### {}'.format(data_select),unsafe_allow_html=True)
+            if data_select == "US Census Data":                
+                html_str = f"""
+                <style>
+                p.a {{
+                  font: bold {20}px Courier;
+                }}
+                </style>
+                <p class="a">{data_select}</p>
+                """
+                st.markdown(html_str, unsafe_allow_html=True) 
                 formatted_data,model = create_model(data, model_select)
         
                 if ex_select=="Lime":
@@ -119,7 +127,15 @@ def write():
                     st.pyplot()
                     
                 else:
-                    st.markdown('### {}'.format(data_select),unsafe_allow_html=True)
+                    html_str = f"""
+                    <style>
+                    p.a {{
+                      font: bold {20}px Courier;
+                    }}
+                    </style>
+                    <p class="a">{data_select}</p>
+                    """
+                    st.markdown(html_str, unsafe_allow_html=True)
                     ##Summary plot
                     shap_values,explainer = shap_explanation(formatted_data, model)
                     #st_shap(shap.force_plot(explainer.expected_values, shap_values[0], X_test[:100], plot_cmap=["#FF5733","#335BFF"]))
