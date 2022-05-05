@@ -127,15 +127,6 @@ def write():
                     st.pyplot()
                     
                 else:
-                    html_str = f"""
-                    <style>
-                    p.a {{
-                      font: bold {30}px Courier;
-                    }}
-                    </style>
-                    <p class="a">{'Synthetic Data without noise'}</p>
-                    """
-                    st.markdown(html_str, unsafe_allow_html=True)
                     ##Summary plot
                     shap_values,explainer = shap_explanation(formatted_data, model)
                     #st_shap(shap.force_plot(explainer.expected_values, shap_values[0], X_test[:100], plot_cmap=["#FF5733","#335BFF"]))
@@ -160,6 +151,7 @@ def write():
                         st.pyplot()
                         plt.clf()
             else:
+                st.markdown("## Synthetic Data without noise")
                 formatted_data,model = create_model_synthetic(data, model_select)
                 
                 if ex_select=="Lime":
