@@ -32,12 +32,6 @@ def create_model(data,Xdata,model):
         xgb_model.fit(X_train, Y_train)
         y_pred = xgb_model.predict(X_test)
         return data_fit,xgb_model
-    
-    elif model== "logistic":
-        log_model = LogisticRegression(random_state=42)
-        log_model.fit(X_train, Y_train)
-        y_pred = log_model.predict(X_test)
-        return data_fit,log_model
 
     elif model== "decision":
         tree_model = DecisionTreeClassifier(random_state=42)
@@ -60,12 +54,6 @@ def create_model_synthetic(data,Xdata,model):
         xgb_model.fit(X_train, Y_train)
         y_pred = xgb_model.predict(X_test)
         return data_fit,xgb_model
-    
-    elif model== "logistic":
-        log_model = LogisticRegression(random_state=42)
-        log_model.fit(X_train, Y_train)
-        y_pred = log_model.predict(X_test)
-        return data_fit,log_model
 
     elif model== "decision":
         tree_model = DecisionTreeClassifier(random_state=42)
@@ -98,11 +86,11 @@ def write():
         col1, col2, col3 = st.columns(3)
      
         with col1:
-            data_select = st.selectbox('Data source',["US Census Data","Synthetic Data without Noise"])
+            data_select = st.selectbox('Data source',["US Census Data","Synthetic Data with Noise with Balanced Class", "Synthetic Data with Noise with Imbalanced Class", "Synthetic Data without Noise with Imbalanced Class", "Synthetic Data without Noise with Balanced Class"])
         with col2:
             ex_select = st.selectbox('Explanation type',["Lime","Shapely"])
         with col3:
-            model_select = st.selectbox('Model',["xgboost","decision","logistic"])
+            model_select = st.selectbox('Model',["xgboost","decision"])
         try:
             
             data = dataframe(str(data_select)) 
@@ -122,13 +110,11 @@ def write():
                     st.pyplot()
                     instance = lime_explanation(formatted_data, model)
                     components.html(instance.as_html())
-                    
-                    
+                       
                 else:
                     ##Summary plot
                     formatted_data,model = create_model(data,data[columns], model_select)
                     shap_values,explainer = shap_explanation(formatted_data, model)
-                    st.write(type(shap_values))
                     shap.summary_plot(shap_values,formatted_data[2],feature_names=columns,plot_type="bar",show=False)
                     st.pyplot(bbox_inches='tight')
                     plt.clf()
@@ -143,10 +129,8 @@ def write():
                         shap.dependence_plot(index,shap_values,formatted_data[4][:100],interaction_index=inds[i],feature_names=columns,show=False)
                         st.pyplot()
                         plt.clf()
-            else:
-                st.markdown("## Synthetic Data without noise")
-                
-                
+            elif data_select == "Synthetic Data with Noise with Balanced Class":
+                st.markdown("## Synthetic Data with Noise with Balanced Class")
                 if ex_select=="Lime":
                     syn_columns = ['Feature1','Feature2','Feature3']
                     col4, col5 = st.columns(2)     
@@ -156,7 +140,7 @@ def write():
                         feature_2 = st.selectbox('Feature2',syn_columns)
                     formatted_data,model = create_model_synthetic(data,data[[feature_1,feature_2]], model_select)
                     fig, ax = plt.subplots(figsize=(5,3))
-                    st.write(sns.heatmap(data[columns].corr(), annot=True))
+                    st.write(sns.heatmap(data[syn_columns].corr(), annot=True))
                     st.pyplot()
                     instance = lime_explanation(formatted_data, model)
                     components.html(instance.as_html(), height=800)
@@ -165,8 +149,6 @@ def write():
                     ##Summary plot
                     formatted_data,model = create_model_synthetic(data,data[columns], model_select)
                     shap_values,explainer = shap_explanation(formatted_data, model)
-                    #st_shap(shap.force_plot(explainer.expected_values, shap_values[0], X_test[:100], plot_cmap=["#FF5733","#335BFF"]))
-                    #st.pyplot()
                     shap.summary_plot(shap_values,formatted_data[2],feature_names=data.drop('target', axis=1).columns,plot_type="bar",show=False)
                     st.pyplot(bbox_inches='tight')
                     plt.clf()
@@ -182,7 +164,115 @@ def write():
                         shap.dependence_plot(index,shap_values,formatted_data[4][:100],interaction_index=inds[i],feature_names=columns,show=False)
                         st.pyplot()
                         plt.clf()
-            
+                        
+            elif data_select == "Synthetic Data with Noise with Imbalanced Class":
+                st.markdown("## Synthetic Data with Noise with Imbalanced Class")
+                if ex_select=="Lime":
+                    syn_columns = ['Feature1','Feature2','Feature3']
+                    col4, col5 = st.columns(2)     
+                    with col4:
+                        feature_1 = st.selectbox('Feature1',syn_columns)
+                    with col5:
+                        feature_2 = st.selectbox('Feature2',syn_columns)
+                    formatted_data,model = create_model_synthetic(data,data[[feature_1,feature_2]], model_select)
+                    fig, ax = plt.subplots(figsize=(5,3))
+                    st.write(sns.heatmap(data[syn_columns].corr(), annot=True))
+                    st.pyplot()
+                    instance = lime_explanation(formatted_data, model)
+                    components.html(instance.as_html(), height=800)
+                   
+                else:
+                    ##Summary plot
+                    formatted_data,model = create_model_synthetic(data,data[columns], model_select)
+                    shap_values,explainer = shap_explanation(formatted_data, model)
+                    shap.summary_plot(shap_values,formatted_data[2],feature_names=data.drop('target', axis=1).columns,plot_type="bar",show=False)
+                    st.pyplot(bbox_inches='tight')
+                    plt.clf()
+    
+                    ##Dependence plot
+                    syn_columns = ['Feature1','Feature2','Feature3']
+                    feature_select = st.selectbox('Feature',syn_columns)
+                    
+                    index = syn_columns.index(feature_select)
+                    
+                    inds = shap.approximate_interactions(index, shap_values, formatted_data[4][:100])
+                    for i in range(3):
+                        shap.dependence_plot(index,shap_values,formatted_data[4][:100],interaction_index=inds[i],feature_names=columns,show=False)
+                        st.pyplot()
+                        plt.clf()
+                        
+            elif data_select == "Synthetic Data without Noise with Imbalanced Class":
+                st.markdown("## Synthetic Data without Noise with Imbalanced Class")
+                if ex_select=="Lime":
+                    syn_columns = ['Feature1','Feature2','Feature3']
+                    col4, col5 = st.columns(2)     
+                    with col4:
+                        feature_1 = st.selectbox('Feature1',syn_columns)
+                    with col5:
+                        feature_2 = st.selectbox('Feature2',syn_columns)
+                    formatted_data,model = create_model_synthetic(data,data[[feature_1,feature_2]], model_select)
+                    fig, ax = plt.subplots(figsize=(5,3))
+                    st.write(sns.heatmap(data[syn_columns].corr(), annot=True))
+                    st.pyplot()
+                    instance = lime_explanation(formatted_data, model)
+                    components.html(instance.as_html(), height=800)
+                   
+                else:
+                    ##Summary plot
+                    formatted_data,model = create_model_synthetic(data,data[columns], model_select)
+                    shap_values,explainer = shap_explanation(formatted_data, model)
+                    shap.summary_plot(shap_values,formatted_data[2],feature_names=data.drop('target', axis=1).columns,plot_type="bar",show=False)
+                    st.pyplot(bbox_inches='tight')
+                    plt.clf()
+    
+                    ##Dependence plot
+                    syn_columns = ['Feature1','Feature2','Feature3']
+                    feature_select = st.selectbox('Feature',syn_columns)
+                    
+                    index = syn_columns.index(feature_select)
+                    
+                    inds = shap.approximate_interactions(index, shap_values, formatted_data[4][:100])
+                    for i in range(3):
+                        shap.dependence_plot(index,shap_values,formatted_data[4][:100],interaction_index=inds[i],feature_names=columns,show=False)
+                        st.pyplot()
+                        plt.clf()
+                        
+            elif data_select == "Synthetic Data without Noise with Balanced Class":
+                st.markdown("## Synthetic Data without Noise with Balanced Class")
+                if ex_select=="Lime":
+                    syn_columns = ['Feature1','Feature2','Feature3']
+                    col4, col5 = st.columns(2)     
+                    with col4:
+                        feature_1 = st.selectbox('Feature1',syn_columns)
+                    with col5:
+                        feature_2 = st.selectbox('Feature2',syn_columns)
+                    formatted_data,model = create_model_synthetic(data,data[[feature_1,feature_2]], model_select)
+                    fig, ax = plt.subplots(figsize=(5,3))
+                    st.write(sns.heatmap(data[syn_columns].corr(), annot=True))
+                    st.pyplot()
+                    instance = lime_explanation(formatted_data, model)
+                    components.html(instance.as_html(), height=800)
+                   
+                else:
+                    ##Summary plot
+                    formatted_data,model = create_model_synthetic(data,data[columns], model_select)
+                    shap_values,explainer = shap_explanation(formatted_data, model)
+                    shap.summary_plot(shap_values,formatted_data[2],feature_names=data.drop('target', axis=1).columns,plot_type="bar",show=False)
+                    st.pyplot(bbox_inches='tight')
+                    plt.clf()
+    
+                    ##Dependence plot
+                    syn_columns = ['Feature1','Feature2','Feature3']
+                    feature_select = st.selectbox('Feature',syn_columns)
+                    
+                    index = syn_columns.index(feature_select)
+                    
+                    inds = shap.approximate_interactions(index, shap_values, formatted_data[4][:100])
+                    for i in range(3):
+                        shap.dependence_plot(index,shap_values,formatted_data[4][:100],interaction_index=inds[i],feature_names=columns,show=False)
+                        st.pyplot()
+                        plt.clf()
+                        
         except Exception as e:
             st.write(e)
         
