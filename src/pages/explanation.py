@@ -130,7 +130,7 @@ def write():
                     html_str = f"""
                     <style>
                     p.a {{
-                      font: bold {20}px Courier;
+                      font: bold {30}px Courier;
                     }}
                     </style>
                     <p class="a">{data_select}</p>
