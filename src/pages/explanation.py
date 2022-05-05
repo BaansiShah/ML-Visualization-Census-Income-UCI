@@ -47,9 +47,9 @@ def create_model(data,Xdata,model):
 
     #Passing data to lime/shap
     
-def create_model_synthetic(data,model):
+def create_model_synthetic(data,Xdata,model):
     #Train_test_split
-    X = data[['x1', 'y1', 'z1']]
+    X = Xdata
     Y = data['target']
     X_train, X_test, Y_train, Y_test = train_test_split(X.values,Y.values, test_size=0.2, random_state=40)
     data_fit = (X,Y,X_train,Y_train,X_test,Y_test)
