@@ -19,9 +19,9 @@ matplotlib.use('Agg')
 
 columns = ['weeks_worked_in_year', 'num_persons_worked_for_employer', 'capital_gains','dividends_from_stocks', 'family_members_under_18', 'veterans_benefits']
 
-def create_model(data,model):
+def create_model(data,Xdata,model):
     #Train_test_split
-    X = data[columns]
+    X = Xdata
     Y = data['under_50k_over_50k']
     X_train, X_test, Y_train, Y_test = train_test_split(X.values,Y.values, test_size=0.2, random_state=40)
     data_fit = (X,Y,X_train,Y_train,X_test,Y_test)
@@ -103,22 +103,17 @@ def write():
             ex_select = st.selectbox('Explanation type',["Lime","Shapely"])
         with col3:
             model_select = st.selectbox('Model',["xgboost","decision","logistic"])
-    	
-        col4, col5 = st.columns(2)
-     
-        with col4:
-            feature_1 = st.selectbox('Feature1',columns)
-        with col5:
-            feature_2 = st.selectbox('Feature2',columns)
-
-        
         try:
             
-            data = dataframe(str(data_select))
-            data = data[[feature_1,feature_2]] 
-            if data_select == "US Census Data":                
+            data = dataframe(str(data_select)) 
+            if data_select == "US Census Data":
+                col4, col5 = st.columns(2)
+                with col4:
+                    feature_1 = st.selectbox('Feature1',columns)
+                with col5:
+                    feature_2 = st.selectbox('Feature2',columns)
                 st.markdown("### US Census Data (Real-World Data)", unsafe_allow_html=True) 
-                formatted_data,model = create_model(data, model_select)
+                formatted_data,model = create_model(data,data[[feature_1,feature_2]], model_select)
         
                 if ex_select=="Lime":
                     instance = lime_explanation(formatted_data, model)
@@ -153,7 +148,13 @@ def write():
                         plt.clf()
             else:
                 st.markdown("## Synthetic Data without noise")
-                formatted_data,model = create_model_synthetic(data, model_select)
+                syn_columns = ['Feature1','Feature2','Feature3']
+                col4, col5 = st.columns(2)     
+                with col4:
+                    feature_1 = st.selectbox('Feature1',syn_columns)
+                with col5:
+                    feature_2 = st.selectbox('Feature2',syn_columns)
+                formatted_data,model = create_model_synthetic(data,data[[feature_1,feature_2]], model_select)
                 
                 if ex_select=="Lime":
                     instance = lime_explanation(formatted_data, model)
