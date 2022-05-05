@@ -103,10 +103,19 @@ def write():
             ex_select = st.selectbox('Explanation type',["Lime","Shapely"])
         with col3:
             model_select = st.selectbox('Model',["xgboost","decision","logistic"])
+    	
+        col4, col5 = st.columns(2)
+     
+        with col4:
+            feature_1 = st.selectbox('Feature1',columns)
+        with col5:
+            feature_2 = st.selectbox('Feature2',columns)
+
         
         try:
+            
             data = dataframe(str(data_select))
-                    
+            data = data[[feature1,feature2]] 
             if data_select == "US Census Data":                
                 st.markdown("### US Census Data (Real-World Data)", unsafe_allow_html=True) 
                 formatted_data,model = create_model(data, model_select)
