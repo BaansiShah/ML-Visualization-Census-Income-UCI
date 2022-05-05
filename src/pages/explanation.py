@@ -107,15 +107,16 @@ def write():
             
             data = dataframe(str(data_select)) 
             if data_select == "US Census Data":
-                col4, col5 = st.columns(2)
-                with col4:
-                    feature_1 = st.selectbox('Feature1',columns)
-                with col5:
-                    feature_2 = st.selectbox('Feature2',columns)
                 st.markdown("### US Census Data (Real-World Data)", unsafe_allow_html=True) 
-                formatted_data,model = create_model(data,data[[feature_1,feature_2]], model_select)
         
                 if ex_select=="Lime":
+                    col4, col5 = st.columns(2)
+                    with col4:
+                        feature_1 = st.selectbox('Feature1',columns)
+                    with col5:
+                        feature_2 = st.selectbox('Feature2',columns)
+   
+                    formatted_data,model = create_model(data,data[[feature_1,feature_2]], model_select)
                     fig, ax = plt.subplots(figsize=(5,3))
                     st.write(sns.heatmap(data[columns].corr(), annot=True))
                     st.pyplot()
@@ -125,6 +126,7 @@ def write():
                     
                 else:
                     ##Summary plot
+                    formatted_data,model = create_model(data,data[columns], model_select)
                     shap_values,explainer = shap_explanation(formatted_data, model)
                     #st_shap(shap.force_plot(explainer.expected_values, shap_values[0], X_test[:100], plot_cmap=["#FF5733","#335BFF"]))
                     #st.pyplot()
@@ -149,15 +151,16 @@ def write():
                         plt.clf()
             else:
                 st.markdown("## Synthetic Data without noise")
-                syn_columns = ['Feature1','Feature2','Feature3']
-                col4, col5 = st.columns(2)     
-                with col4:
-                    feature_1 = st.selectbox('Feature1',syn_columns)
-                with col5:
-                    feature_2 = st.selectbox('Feature2',syn_columns)
-                formatted_data,model = create_model_synthetic(data,data[[feature_1,feature_2]], model_select)
+                
                 
                 if ex_select=="Lime":
+                    syn_columns = ['Feature1','Feature2','Feature3']
+                    col4, col5 = st.columns(2)     
+                    with col4:
+                        feature_1 = st.selectbox('Feature1',syn_columns)
+                    with col5:
+                        feature_2 = st.selectbox('Feature2',syn_columns)
+                    formatted_data,model = create_model_synthetic(data,data[[feature_1,feature_2]], model_select)
                     fig, ax = plt.subplots(figsize=(5,3))
                     st.write(sns.heatmap(data[columns].corr(), annot=True))
                     st.pyplot()
@@ -166,6 +169,7 @@ def write():
                    
                 else:
                     ##Summary plot
+                    formatted_data,model = create_model_synthetic(data,data[columns], model_select)
                     shap_values,explainer = shap_explanation(formatted_data, model)
                     #st_shap(shap.force_plot(explainer.expected_values, shap_values[0], X_test[:100], plot_cmap=["#FF5733","#335BFF"]))
                     #st.pyplot()
