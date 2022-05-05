@@ -110,22 +110,10 @@ def write():
                 if ex_select=="Lime":
                     instance = lime_explanation(formatted_data, model)
                     components.html(instance.as_html(), height=800)
-                    ntree=st.number_input('Select the desired record for detailed explanation on the training set'
-                            , min_value=1
-                            , max_value=5
-                            )
-                    print("hello")
-                    if model_select=="xgboost":
-                        tree=xgb.to_graphviz(model,num_trees=int(ntree))
-                        st.pyplot(tree)
-                    elif model_select=="logistic":
-                        tree=LogisticRegression.to_graphviz(model,num_trees=ntree)
-                        print(n_tree)
-                        st.graphviz_chart(tree)
-                    elif model_select=="decision":
-                        tree=DecisionTreeClassifier.to_graphviz(model,num_trees=ntree)
-                        print(n_tree)
-                        st.graphviz_chart(tree)
+                    fig, ax = plt.subplots()
+                    sns.heatmap(data[columns].corr(), ax=ax)
+                    st.write(fig)
+                    
                 else:
                     ##Summary plot
                     shap_values,explainer = shap_explanation(formatted_data, model)
