@@ -135,18 +135,12 @@ def write():
                     plt.clf()
     
                     ##Dependence plot
-                    st.write('In the slider below, select the number of features to inspect for possible interaction effects.'
-                            'These are ordered based on feature importance in the model.')
-                    ranges = st.slider('Please select the number of features',min_value=min(range(len(columns)))+1, max_value=max(range(len(columns)))+1,value=1)
-                    if ranges-1 == 0:
-                        st.write('you have selected the most importance feature')
-                    elif ranges == len(columns):
-                            st.write('you have selected all possible features')
-                    else:
-                        st.write('you have selected the top:',ranges,'important features')
-                    for rank in range(ranges):
-                        ingest=('rank('+str(rank)+')')
-                        shap.dependence_plot(ingest,shap_values,formatted_data[4][:100],show=False)
+                    col6= st.columns(2)
+                    with col4:
+                        feature_select = st.selectbox('Feature',columns)
+                    inds = shap.approximate_interactions(feature_select, shap_values, formatted_data[4][:100])
+                    for i in range(4):
+                        shap.dependence_plot(feature_select,shap_values,formatted_data[4][:100],interaction_index=dep_columns[i],show=False)
                         st.pyplot()
                         plt.clf()
             else:
