@@ -111,10 +111,10 @@ def write():
                 html_str = f"""
                 <style>
                 p.a {{
-                  font: bold {20}px Courier;
+                  font: bold {30}px Courier;
                 }}
                 </style>
-                <p class="a">{data_select}</p>
+                <p class="a">{data_select}(Real-World Data)</p>
                 """
                 st.markdown(html_str, unsafe_allow_html=True) 
                 formatted_data,model = create_model(data, model_select)
