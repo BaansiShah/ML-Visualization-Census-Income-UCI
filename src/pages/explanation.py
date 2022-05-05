@@ -114,7 +114,7 @@ def write():
                     st.write(data[columns].corr())
                     fig, ax = plt.subplots()
                     sns.heatmap(data[columns].corr(), ax=ax)
-                    st.write(fig)
+                    st.pyplot(fig)
                     
                 else:
                     ##Summary plot
