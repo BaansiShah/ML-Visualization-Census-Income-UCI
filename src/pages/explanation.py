@@ -135,8 +135,8 @@ def write():
                     plt.clf()
     
                     ##Dependence plot
-                    col6= st.columns(2)
-                    with col4:
+                    col6= st.columns(1)
+                    with col6:
                         feature_select = st.selectbox('Feature',columns)
                     inds = shap.approximate_interactions(feature_select, shap_values, formatted_data[4][:100])
                     for i in range(4):
