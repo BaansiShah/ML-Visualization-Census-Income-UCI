@@ -116,11 +116,12 @@ def write():
                 formatted_data,model = create_model(data,data[[feature_1,feature_2]], model_select)
         
                 if ex_select=="Lime":
-                    instance = lime_explanation(formatted_data, model)
-                    components.html(instance.as_html())
                     fig, ax = plt.subplots(figsize=(5,3))
                     st.write(sns.heatmap(data[columns].corr(), annot=True))
                     st.pyplot()
+                    instance = lime_explanation(formatted_data, model)
+                    components.html(instance.as_html())
+                    
                     
                 else:
                     ##Summary plot
@@ -157,24 +158,12 @@ def write():
                 formatted_data,model = create_model_synthetic(data,data[[feature_1,feature_2]], model_select)
                 
                 if ex_select=="Lime":
+                    fig, ax = plt.subplots(figsize=(5,3))
+                    st.write(sns.heatmap(data[columns].corr(), annot=True))
+                    st.pyplot()
                     instance = lime_explanation(formatted_data, model)
                     components.html(instance.as_html(), height=800)
-                    ntree=st.number_input('Select the desired record for detailed explanation on the training set'
-                            , min_value=1
-                            , max_value=5
-                            )
-                    print("hello")
-                    if model_select=="xgboost":
-                        tree=xgb.to_graphviz(model,num_trees=int(ntree))
-                        st.pyplot(tree)
-                    elif model_select=="logistic":
-                        tree=LogisticRegression.to_graphviz(model,num_trees=ntree)
-                        print(n_tree)
-                        st.graphviz_chart(tree)
-                    elif model_select=="decision":
-                        tree=DecisionTreeClassifier.to_graphviz(model,num_trees=ntree)
-                        print(n_tree)
-                        st.graphviz_chart(tree)
+                   
                 else:
                     ##Summary plot
                     shap_values,explainer = shap_explanation(formatted_data, model)
