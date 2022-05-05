@@ -140,7 +140,7 @@ def write():
                     
                     inds = shap.approximate_interactions(index, shap_values, formatted_data[4][:100])
                     for i in range(4):
-                        shap.dependence_plot(index,shap_values,formatted_data[4][:100],interaction_index=inds[i],show=False)
+                        shap.dependence_plot(index,shap_values,formatted_data[4][:100],interaction_index=inds[i],feature_names=columns,show=False)
                         st.pyplot()
                         plt.clf()
             else:
@@ -179,7 +179,7 @@ def write():
                     
                     inds = shap.approximate_interactions(index, shap_values, formatted_data[4][:100])
                     for i in range(4):
-                        shap.dependence_plot(index,shap_values,formatted_data[4][:100],interaction_index=inds[i],show=False)
+                        shap.dependence_plot(index,shap_values,formatted_data[4][:100],interaction_index=inds[i],feature_names=columns,show=False)
                         st.pyplot()
                         plt.clf()
             
