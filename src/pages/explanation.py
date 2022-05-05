@@ -138,9 +138,9 @@ def write():
                     st.write(feature_select)
                     index = columns.index(feature_select)
                     
-                    inds = shap.approximate_interactions(index, shap_values, formatted_data[4][:100])
+                    inds = shap.approximate_interactions(0, shap_values, formatted_data[4][:100])
                     for i in range(4):
-                        shap.dependence_plot(index,shap_values,formatted_data[4][:100],interaction_index=inds[i],show=False)
+                        shap.dependence_plot(0,shap_values,formatted_data[4][:100],interaction_index=inds[i],show=False)
                         st.pyplot()
                         plt.clf()
             else:
