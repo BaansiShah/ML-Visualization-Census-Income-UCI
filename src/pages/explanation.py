@@ -104,12 +104,14 @@ def write():
             model_select = st.selectbox('Model',["xgboost","decision","logistic"])
         try:
             data = dataframe(str(data_select))
+            
             if data_select == "US Census Data":
                 formatted_data,model = create_model(data, model_select)
         
                 if ex_select=="Lime":
                     instance = lime_explanation(formatted_data, model)
                     components.html(instance.as_html(), height=800)
+                    st.write(data[columns].head())
                     fig, ax = plt.subplots()
                     sns.heatmap(data[columns].corr(), ax=ax)
                     st.write(fig)
