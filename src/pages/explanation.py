@@ -115,7 +115,7 @@ def write():
         try:
             
             data = dataframe(str(data_select))
-            data = data[[feature1,feature2]] 
+            data = data[[feature_1,feature_2]] 
             if data_select == "US Census Data":                
                 st.markdown("### US Census Data (Real-World Data)", unsafe_allow_html=True) 
                 formatted_data,model = create_model(data, model_select)
