@@ -151,7 +151,6 @@ def write():
                         st.pyplot()
                         plt.clf()
             else:
-                st.write("Synthetic Data : ", data)
                 formatted_data,model = create_model_synthetic(data, model_select)
                 
                 if ex_select=="Lime":
