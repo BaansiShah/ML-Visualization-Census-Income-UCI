@@ -138,7 +138,7 @@ def write():
                     feature_select = st.selectbox('Feature',columns)
                     inds = shap.approximate_interactions(feature_select, shap_values, formatted_data[4][:100])
                     for i in range(4):
-                        shap.dependence_plot(feature_select,shap_values,formatted_data[4][:100],interaction_index=dep_columns[i],show=False)
+                        shap.dependence_plot(feature_select,shap_values,formatted_data[4][:100],interaction_index=inds[i],show=False)
                         st.pyplot()
                         plt.clf()
             else:
