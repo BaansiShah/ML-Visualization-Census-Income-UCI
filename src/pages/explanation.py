@@ -98,7 +98,7 @@ def write():
         col1, col2, col3 = st.columns(3)
      
         with col1:
-            data_select = st.selectbox('Data source',["US Census Data","Synthetic Data"])
+            data_select = st.selectbox('Data source',["US Census Data","Synthetic Data with Noise"])
         with col2:
             ex_select = st.selectbox('Explanation type',["Lime","Shapely"])
         with col3:
