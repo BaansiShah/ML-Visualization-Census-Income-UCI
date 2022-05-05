@@ -9,7 +9,7 @@ def dataframe(source):
         data = pd.read_csv("data/census.csv", na_values=' ?')
         return data
     else:
-        n_samples=5000
+        n_samples=10000
         n_features=3
         random_state=1
         return_centers=True
@@ -22,6 +22,6 @@ def dataframe(source):
         covariance = cov(x[:,0], x[:, 1])
         st.write("Correlation of Features vs Target : ", pearsonr(x[:,0], x[:, 1]))
         
-        final_df = pd.DataFrame(x,columns=['x1','y1','z1'])
+        final_df = pd.DataFrame(x,columns=['Feature1','Feature2','Feature3'])
         final_df['target'] = y
         return final_df
