@@ -111,7 +111,7 @@ def write():
                 if ex_select=="Lime":
                     instance = lime_explanation(formatted_data, model)
                     components.html(instance.as_html(), height=800)
-                    st.write(data[columns].head())
+                    st.write(data[columns].corr())
                     fig, ax = plt.subplots()
                     sns.heatmap(data[columns].corr(), ax=ax)
                     st.write(fig)
