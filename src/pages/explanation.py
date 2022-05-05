@@ -113,7 +113,7 @@ def write():
                     instance = lime_explanation(formatted_data, model)
                     components.html(instance.as_html())
                     fig, ax = plt.subplots(figsize=(10,10))
-                    st.write(sns.heatmap(data[columns].corr(), annot=True,linewidths=0.5))
+                    st.write(sns.heatmap(data[columns].corr(), annot=True,height=200))
                     st.pyplot()
                     
                 else:
