@@ -128,6 +128,7 @@ def write():
                     ##Summary plot
                     formatted_data,model = create_model(data,data[columns], model_select)
                     shap_values,explainer = shap_explanation(formatted_data, model)
+                    st.write(type(shap_values))
                     #st_shap(shap.force_plot(explainer.expected_values, shap_values[0], X_test[:100], plot_cmap=["#FF5733","#335BFF"]))
                     #st.pyplot()
                     shap.summary_plot(shap_values,formatted_data[2],feature_names=columns,plot_type="bar",show=False)
