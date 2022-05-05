@@ -5,8 +5,8 @@ import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
 import numpy as np
 import xgboost as xgb
-from sklearn.linear_model import LogisticRegression
-from sklearn.tree import DecisionTreeClassifier 
+from sklearn.neural_network import MLPClassifier
+from sklearn.ensemble import RandomForestClassifier
 import pandas as pd
 import lime
 import shap 
@@ -18,6 +18,9 @@ st.set_option('deprecation.showPyplotGlobalUse', False)
 matplotlib.use('Agg')
 
 columns = ['weeks_worked_in_year', 'num_persons_worked_for_employer', 'capital_gains','dividends_from_stocks', 'family_members_under_18', 'veterans_benefits']
+global syn_columns 
+
+syn_columns = ['Feature1','Feature2','Feature3']
 
 def create_model(data,Xdata,model):
     #Train_test_split
@@ -27,20 +30,19 @@ def create_model(data,Xdata,model):
     data_fit = (X,Y,X_train,Y_train,X_test,Y_test)
 
     #Models    
-    if model=="xgboost":
+    if model=="XGBoost":
         xgb_model = xgb.XGBClassifier(objective="binary:logistic", random_state=42)
         xgb_model.fit(X_train, Y_train)
         y_pred = xgb_model.predict(X_test)
         return data_fit,xgb_model
 
-    elif model== "decision":
-        tree_model = DecisionTreeClassifier(random_state=42)
-        tree_model.fit(X_train, Y_train)
-        y_pred = tree_model.predict(X_test)
-        return data_fit,tree_model
+    elif model== "Random Forest":
+        rf_model = RandomForestClassifier(max_depth=2, random_state=2022)
+        rf_model.fit(X_train, Y_train)
+        y_pred = rf_model.predict(X_test)
+        return data_fit,rf_model
 
-    #Passing data to lime/shap
-    
+#Passing data to lime/shap    
 def create_model_synthetic(data,Xdata,model):
     #Train_test_split
     X = Xdata
@@ -49,17 +51,17 @@ def create_model_synthetic(data,Xdata,model):
     data_fit = (X,Y,X_train,Y_train,X_test,Y_test)
 
     #Models    
-    if model=="xgboost":
+    if model=="XGBoost":
         xgb_model = xgb.XGBClassifier(objective="binary:logistic", random_state=42)
         xgb_model.fit(X_train, Y_train)
         y_pred = xgb_model.predict(X_test)
         return data_fit,xgb_model
 
-    elif model== "decision":
-        tree_model = DecisionTreeClassifier(random_state=42)
-        tree_model.fit(X_train, Y_train)
-        y_pred = tree_model.predict(X_test)
-        return data_fit,tree_model
+    elif model== "Random Forest":
+        rf_model = RandomForestClassifier(random_state=42)
+        rf_model.fit(X_train, Y_train)
+        y_pred = rf_model.predict(X_test)
+        return data_fit,rf_model
 
     
 def lime_explanation(data_fit,model):
@@ -90,7 +92,7 @@ def write():
         with col2:
             ex_select = st.selectbox('Explanation type',["Lime","Shapely"])
         with col3:
-            model_select = st.selectbox('Model',["xgboost","decision"])
+            model_select = st.selectbox('Model',["XGBoost","Random Forest"])
         try:
             
             data = dataframe(str(data_select)) 
@@ -123,16 +125,23 @@ def write():
                     feature_select = st.selectbox('Feature',columns)
                     
                     index = columns.index(feature_select)
-                    
-                    inds = shap.approximate_interactions(index, shap_values, formatted_data[4][:100])
-                    for i in range(5):
-                        shap.dependence_plot(index,shap_values,formatted_data[4][:100],interaction_index=inds[i],feature_names=columns,show=False)
-                        st.pyplot()
-                        plt.clf()
+                    if model_select == "Random Forest":
+                        inds = shap.approximate_interactions(0, shap_values[1], formatted_data[4][:100])
+                        for i in range(5):
+                            shap.dependence_plot(0,shap_values[1],formatted_data[4][:100],interaction_index=inds[i],feature_names=columns,show=False)
+                            st.pyplot()
+                            plt.clf()
+                    else:
+                        inds = shap.approximate_interactions(0, shap_values, formatted_data[4][:100])
+                        for i in range(5):
+                            shap.dependence_plot(0,shap_values,formatted_data[4][:100],interaction_index=inds[i],feature_names=columns,show=False)
+                            st.pyplot()
+                            plt.clf()
+                        
             elif data_select == "Synthetic Data with Noise with Balanced Class":
                 st.markdown("## Synthetic Data with Noise with Balanced Class")
+                syn_columns = ['Feature1','Feature2','Feature3']
                 if ex_select=="Lime":
-                    syn_columns = ['Feature1','Feature2','Feature3']
                     col4, col5 = st.columns(2)     
                     with col4:
                         feature_1 = st.selectbox('Feature1',syn_columns)
@@ -147,7 +156,7 @@ def write():
                    
                 else:
                     ##Summary plot
-                    formatted_data,model = create_model_synthetic(data,data[columns], model_select)
+                    formatted_data,model = create_model_synthetic(data,data[syn_columns], model_select)
                     shap_values,explainer = shap_explanation(formatted_data, model)
                     shap.summary_plot(shap_values,formatted_data[2],feature_names=data.drop('target', axis=1).columns,plot_type="bar",show=False)
                     st.pyplot(bbox_inches='tight')
@@ -159,16 +168,23 @@ def write():
                     
                     index = syn_columns.index(feature_select)
                     
-                    inds = shap.approximate_interactions(index, shap_values, formatted_data[4][:100])
-                    for i in range(3):
-                        shap.dependence_plot(index,shap_values,formatted_data[4][:100],interaction_index=inds[i],feature_names=columns,show=False)
-                        st.pyplot()
-                        plt.clf()
+                    if model_select == "Random Forest":
+                        inds = shap.approximate_interactions(index, shap_values[1], formatted_data[4][:100])
+                        for i in range(2):
+                            shap.dependence_plot(0,shap_values[1],formatted_data[4][:100],interaction_index=inds[i],feature_names=columns,show=False)
+                            st.pyplot()
+                            plt.clf()
+                    else:
+                        inds = shap.approximate_interactions(index, shap_values, formatted_data[4][:100])
+                        for i in range(2):
+                            shap.dependence_plot(0,shap_values,formatted_data[4][:100],interaction_index=inds[i],feature_names=columns,show=False)
+                            st.pyplot()
+                            plt.clf()
                         
             elif data_select == "Synthetic Data with Noise with Imbalanced Class":
                 st.markdown("## Synthetic Data with Noise with Imbalanced Class")
+                syn_columns = ['Feature1','Feature2','Feature3']
                 if ex_select=="Lime":
-                    syn_columns = ['Feature1','Feature2','Feature3']
                     col4, col5 = st.columns(2)     
                     with col4:
                         feature_1 = st.selectbox('Feature1',syn_columns)
@@ -183,7 +199,7 @@ def write():
                    
                 else:
                     ##Summary plot
-                    formatted_data,model = create_model_synthetic(data,data[columns], model_select)
+                    formatted_data,model = create_model_synthetic(data,data[syn_columns], model_select)
                     shap_values,explainer = shap_explanation(formatted_data, model)
                     shap.summary_plot(shap_values,formatted_data[2],feature_names=data.drop('target', axis=1).columns,plot_type="bar",show=False)
                     st.pyplot(bbox_inches='tight')
@@ -195,16 +211,23 @@ def write():
                     
                     index = syn_columns.index(feature_select)
                     
-                    inds = shap.approximate_interactions(index, shap_values, formatted_data[4][:100])
-                    for i in range(3):
-                        shap.dependence_plot(index,shap_values,formatted_data[4][:100],interaction_index=inds[i],feature_names=columns,show=False)
-                        st.pyplot()
-                        plt.clf()
+                    if model_select == "Random Forest":
+                        inds = shap.approximate_interactions(index, shap_values[1], formatted_data[4][:100])
+                        for i in range(2):
+                            shap.dependence_plot(0,shap_values[1],formatted_data[4][:100],interaction_index=inds[i],feature_names=columns,show=False)
+                            st.pyplot()
+                            plt.clf()
+                    else:
+                        inds = shap.approximate_interactions(index, shap_values, formatted_data[4][:100])
+                        for i in range(2):
+                            shap.dependence_plot(0,shap_values,formatted_data[4][:100],interaction_index=inds[i],feature_names=columns,show=False)
+                            st.pyplot()
+                            plt.clf()
                         
             elif data_select == "Synthetic Data without Noise with Imbalanced Class":
                 st.markdown("## Synthetic Data without Noise with Imbalanced Class")
+                syn_columns = ['Feature1','Feature2','Feature3']
                 if ex_select=="Lime":
-                    syn_columns = ['Feature1','Feature2','Feature3']
                     col4, col5 = st.columns(2)     
                     with col4:
                         feature_1 = st.selectbox('Feature1',syn_columns)
@@ -219,7 +242,7 @@ def write():
                    
                 else:
                     ##Summary plot
-                    formatted_data,model = create_model_synthetic(data,data[columns], model_select)
+                    formatted_data,model = create_model_synthetic(data,data[syn_columns], model_select)
                     shap_values,explainer = shap_explanation(formatted_data, model)
                     shap.summary_plot(shap_values,formatted_data[2],feature_names=data.drop('target', axis=1).columns,plot_type="bar",show=False)
                     st.pyplot(bbox_inches='tight')
@@ -231,16 +254,23 @@ def write():
                     
                     index = syn_columns.index(feature_select)
                     
-                    inds = shap.approximate_interactions(index, shap_values, formatted_data[4][:100])
-                    for i in range(3):
-                        shap.dependence_plot(index,shap_values,formatted_data[4][:100],interaction_index=inds[i],feature_names=columns,show=False)
-                        st.pyplot()
-                        plt.clf()
+                    if model_select == "Random Forest":
+                        inds = shap.approximate_interactions(index, shap_values[1], formatted_data[4][:100])
+                        for i in range(2):
+                            shap.dependence_plot(0,shap_values[1],formatted_data[4][:100],interaction_index=inds[i],feature_names=columns,show=False)
+                            st.pyplot()
+                            plt.clf()
+                    else:
+                        inds = shap.approximate_interactions(index, shap_values, formatted_data[4][:100])
+                        for i in range(2):
+                            shap.dependence_plot(0,shap_values,formatted_data[4][:100],interaction_index=inds[i],feature_names=columns,show=False)
+                            st.pyplot()
+                            plt.clf()
                         
             elif data_select == "Synthetic Data without Noise with Balanced Class":
                 st.markdown("## Synthetic Data without Noise with Balanced Class")
+                syn_columns = ['Feature1','Feature2','Feature3']
                 if ex_select=="Lime":
-                    syn_columns = ['Feature1','Feature2','Feature3']
                     col4, col5 = st.columns(2)     
                     with col4:
                         feature_1 = st.selectbox('Feature1',syn_columns)
@@ -255,7 +285,7 @@ def write():
                    
                 else:
                     ##Summary plot
-                    formatted_data,model = create_model_synthetic(data,data[columns], model_select)
+                    formatted_data,model = create_model_synthetic(data,data[syn_columns], model_select)
                     shap_values,explainer = shap_explanation(formatted_data, model)
                     shap.summary_plot(shap_values,formatted_data[2],feature_names=data.drop('target', axis=1).columns,plot_type="bar",show=False)
                     st.pyplot(bbox_inches='tight')
@@ -267,11 +297,18 @@ def write():
                     
                     index = syn_columns.index(feature_select)
                     
-                    inds = shap.approximate_interactions(index, shap_values, formatted_data[4][:100])
-                    for i in range(3):
-                        shap.dependence_plot(index,shap_values,formatted_data[4][:100],interaction_index=inds[i],feature_names=columns,show=False)
-                        st.pyplot()
-                        plt.clf()
+                    if model_select == "Random Forest":
+                        inds = shap.approximate_interactions(index, shap_values[1], formatted_data[4][:100])
+                        for i in range(2):
+                            shap.dependence_plot(0,shap_values[1],formatted_data[4][:100],interaction_index=inds[i],feature_names=columns,show=False)
+                            st.pyplot()
+                            plt.clf()
+                    else:
+                        inds = shap.approximate_interactions(index, shap_values, formatted_data[4][:100])
+                        for i in range(2):
+                            shap.dependence_plot(0,shap_values,formatted_data[4][:100],interaction_index=inds[i],feature_names=columns,show=False)
+                            st.pyplot()
+                            plt.clf()
                         
         except Exception as e:
             st.write(e)
