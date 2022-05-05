@@ -135,12 +135,12 @@ def write():
     
                     ##Dependence plot
                     feature_select = st.selectbox('Feature',columns)
-                    st.write(feature_select)
+                    
                     index = columns.index(feature_select)
                     
-                    inds = shap.approximate_interactions(0, shap_values, formatted_data[4][:100])
+                    inds = shap.approximate_interactions(index, shap_values, formatted_data[4][:100])
                     for i in range(4):
-                        shap.dependence_plot(0,shap_values,formatted_data[4][:100],interaction_index=inds[i],show=False)
+                        shap.dependence_plot(index,shap_values,formatted_data[4][:100],interaction_index=inds[i],show=False)
                         st.pyplot()
                         plt.clf()
             else:
@@ -172,21 +172,17 @@ def write():
                     plt.clf()
     
                     ##Dependence plot
-                    st.write('In the slider below, select the number of features to inspect for possible interaction effects.'
-                            'These are ordered based on feature importance in the model.')
-                    ranges = st.slider('Please select the number of features',min_value=min(range(len(data.drop('target', axis=1).columns)))+1, max_value=max(range(len(data.drop('target', axis=1).columns)))+1,value=1)
-                    if ranges-1 == 0:
-                        st.write('you have selected the most importance feature')
-                    elif ranges == len(data.drop('target', axis=1).columns):
-                            st.write('you have selected all possible features')
-                    else:
-                        st.write('you have selected the top:',ranges,'important features')
-                    for rank in range(ranges):
-                        ingest=('rank('+str(rank)+')')
-                        shap.dependence_plot(ingest,shap_values,formatted_data[:100],show=False)
+                    syn_columns = ['Feature1','Feature2','Feature3']
+                    feature_select = st.selectbox('Feature',syn_columns)
+                    
+                    index = syn_columns.index(feature_select)
+                    
+                    inds = shap.approximate_interactions(index, shap_values, formatted_data[4][:100])
+                    for i in range(4):
+                        shap.dependence_plot(index,shap_values,formatted_data[4][:100],interaction_index=inds[i],show=False)
                         st.pyplot()
                         plt.clf()
-                
+            
         except Exception as e:
             st.write(e)
         
