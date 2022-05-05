@@ -187,6 +187,5 @@ def write():
                         plt.clf()
                 
         except Exception as e:
-            print(e)
-            st.write("Not able to fetch your results.")
+            st.write(e)
         
